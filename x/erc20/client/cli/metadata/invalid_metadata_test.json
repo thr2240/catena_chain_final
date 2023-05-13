@@ -1,0 +1,21 @@
+{
+  "metadata": [
+    {
+      "description": 1,
+      "denom_units": [
+        {
+          "denom": "exa",
+          "exponent": 0
+        },
+        {
+          "denom": "cmcx",
+          "exponent": 18
+        }
+      ],
+      "base": "exa",
+      "display": "exa",
+      "name": "exa",
+      "symbol": "CMCX"
+    }
+  ]
+}
