@@ -65,6 +65,17 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="exa"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 	jq '.app_state["evm"]["params"]["evm_denom"]="exa"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 	jq '.app_state["inflation"]["params"]["mint_denom"]="exa"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["params"]["exponential_calculation"]["a"]="1000000000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["params"]["exponential_calculation"]["c"]="31250000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["params"]["exponential_calculation"]["bonding_target"]="0.650000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["params"]["inflation_distribution"]["staking_rewards"]="0.633333334000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["inflation"]["params"]["inflation_distribution"]["usage_incentives"]="0.233333333000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+
+	# Set Slashing
+	jq '.app_state["slashing"]["params"]["downtime_jail_duration"]="700s"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+
+	# Set Staking
+	jq '.app_state["staking"]["params"]["max_validators"]=64' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set gas limit in genesis
 	jq '.consensus_params["block"]["max_gas"]="2100000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -72,8 +83,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	jq '.consensus_params["evidence"]["max_bytes"]="67108864"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set base_fee in genesis
-	jq '.app_state["feemarket"]["params"]["base_fee"]="10000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["feemarket"]["params"]["min_gas_price"]="10000000000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["feemarket"]["params"]["base_fee"]="5000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["feemarket"]["params"]["min_gas_price"]="5000000000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set min_deposit for proposal in genesis
 	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["amount"]="1000000000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -151,16 +162,16 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
 	# Allocate genesis accounts (cosmos formatted addresses)
 	
-	catenad add-genesis-account ${KEYS[0]} 18000000000000000000000000000exa --keyring-backend $KEYRING --home "$HOMEDIR"
+	catenad add-genesis-account ${KEYS[0]} 16000000000000000000000000000exa --keyring-backend $KEYRING --home "$HOMEDIR"
 	
 
 	# bc is required to add these big numbers
-	total_supply=$(echo "18000000000000000000000000000" | bc)
+	total_supply=$(echo "16000000000000000000000000000" | bc)
 	jq -r --arg total_supply "$total_supply" '.app_state["bank"]["supply"][0]["amount"]=$total_supply' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 
 	# Sign genesis transaction
-	catenad gentx ${KEYS[0]} 6400000000000000000000000exa --keyring-backend $KEYRING --chain-id $CHAINID --home "$HOMEDIR"  --fees 2000000000000000exa --min-self-delegation 6400000
+	catenad gentx ${KEYS[0]} 6400000000000000000000000exa --keyring-backend $KEYRING --chain-id $CHAINID --home "$HOMEDIR"  --fees 1000000000000000exa --min-self-delegation 6400000
 
 
 
