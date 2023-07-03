@@ -83,8 +83,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	jq '.consensus_params["evidence"]["max_bytes"]="67108864"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set base_fee in genesis
-	jq '.app_state["feemarket"]["params"]["base_fee"]="5000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-	jq '.app_state["feemarket"]["params"]["min_gas_price"]="5000000000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["feemarket"]["params"]["base_fee"]="0"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+	jq '.app_state["feemarket"]["params"]["min_gas_price"]="1000000000000.000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 	# Set min_deposit for proposal in genesis
 	jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["amount"]="1000000000000000000000000"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
@@ -171,7 +171,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
 
 	# Sign genesis transaction
-	catenad gentx ${KEYS[0]} 6400000000000000000000000exa --keyring-backend $KEYRING --chain-id $CHAINID --home "$HOMEDIR"  --fees 1000000000000000exa --min-self-delegation 6400000
+	catenad gentx ${KEYS[0]} 6400000000000000000000000exa --keyring-backend $KEYRING --chain-id $CHAINID --home "$HOMEDIR"  --fees 200000000000000000exa --min-self-delegation 6400000
 
 
 
@@ -186,6 +186,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 	fi
 fi
 
-#  catenad start --pruning=nothing "$TRACE" --gas-prices 20000exa --gas-adjustment 1.3 --fees auto --rpc.laddr tcp://0.0.0.0:26657 --log_level $LOGLEVEL --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --home "$HOMEDIR"
+# catenad start --pruning=nothing "$TRACE" --gas-prices auto --gas-adjustment 1.3 --fees auto --rpc.laddr tcp://0.0.0.0:26657 --log_level $LOGLEVEL --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --home "$HOMEDIR"
 
 # catenad tx staking create-validator --amount=1000000000000000000000exa --from=validator2 --pubkey=$(catenad tendermint show-validator) --moniker="validator2" --chain-id catena_2121-1 --commission-rate="0.1" --commission-max-rate="0.2" --commission-max-change-rate="0.05" --min-self-delegation="500000000" --keyring-backend=test --yes --broadcast-mode block
